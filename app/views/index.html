@@ -10,31 +10,103 @@
     <div id="app">
         <i-container>
             <i-row>
-                <i-column>
+                <i-column xs="12">
                     <h1 class="_text-center">
                         MongoDB + Express.js + Vue.js + Node.js
                     </h1>
                 </i-column>
             </i-row>
             <i-row>
-                <i-column>
+                <i-column xs="12">
                     <p>Dark Mode Switcher</p>
                     <i-button @click="toggleDarkMode">
                         <i-icon icon="light" />
                     </i-button>
                 </i-column>
             </i-row>
+            <i-row>
+                <i-column xs="5">
+                    <!-- create -->
+                    <h5>Tambah item baru</h5>
+                    <i-form>
+                        <i-form-group>
+                            <i-input v-model="nama" placeholder="Name.." />
+                        </i-form-group>
+                        <i-form-group>
+                            <i-input v-model="deskripsi" placeholder="Deskripsi.." />
+                        </i-form-group>
+                        <i-form-group>
+                            <i-input v-model="harga" placeholder="Harga.." />
+                        </i-form-group>
+                        <i-form-group>
+                            <i-input v-model="stringpic" placeholder="String Pic.." />
+                        </i-form-group>
+                        
+                        <i-form-group>
+                            <i-button @click="simpan()" type="submit">Submit</i-button>
+                        </i-form-group>
+                    </i-form>
+                </i-column>
+                <i-column xs="7">
+                    <i-datatable :columns="columns" :rows="rows" />
+                </i-column>
+            </i-row>
         </i-container>
     </div>
 
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@inkline/inkline/dist/inkline.js"></script>
     <script>
         new Vue({ 
             el: '#app',
+            data() {
+                return {
+                    // columns: [
+                    //     { title: 'Name', path: 'name' },
+                    //     { title: 'Email', path: 'email' },
+                    //     { title: 'Age', path: 'age', align: 'right' }
+                    // ],
+                    // rows: [
+                    //     { id: '1', name: 'Richard Hendricks', email: 'richard.hendricks@email.com', age: 26 },
+                    //     { id: '2', name: 'Bertram Gilfoyle', email: 'bertram.gilfoyle@email.com', age: 30 },
+                    //     { id: '3', name: 'Dinesh Chugtai', email: 'dinesh.chugtai@email.com', age: 30 },
+                    //     { id: '4', name: 'Jared Dunn', email: 'jared.dunn@email.com', age: 35 },
+                    //     { id: '5', name: 'Erlich Bachman', email: 'erlich.bachman@email.com', age: 32 }
+                    // ]
+                    nama: null,
+                    deskripsi: null,
+                    harga: null,
+                    stringpic: null,
+                    columns: [
+                        { title: 'Nama', path: 'name' },
+                        { title: 'Deskripsi', path: 'description' },
+                        { title: 'Harga', path: 'price' },
+                        { title: 'Pic', path: 'pic' }
+                    ],
+                    rows: []
+                }
+            },
+            mounted(){
+                axios.get('http://localhost:3000/products').then((result) => {
+                    console.log(result.data)
+                    this.rows = result.data
+                })
+            },
             methods: {
                 toggleDarkMode() {
                     this.$inkline.config.variant = this.$inkline.config.variant === 'light' ? 'dark' : 'light';
+                },
+                simpan() {
+                    let data = {
+                        name: this.nama,
+                        description: this.deskripsi,
+                        price: this.harga,
+                        pic: this.stringpic
+                    }
+                    axios.post('http://localhost:3000/products', data).then((result) => {
+                        console.log(result)
+                    })
                 }
             }
         });
