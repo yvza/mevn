@@ -24,7 +24,8 @@ mongoose.connection.once('open', function(){
 
 //define a simple route
 app.get('/', function(req, res){
-    res.json({"message": "Welcome to My Online Furniture Store."});
+    // res.json({"message": "Welcome to My Online Furniture Store."});
+    res.sendFile(__dirname + '/app/views/index.html');
 });
 
 //Require Product routes
